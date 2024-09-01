@@ -2,14 +2,17 @@ import express from 'express';
 import userRoute from './routes/userRoute.js';
 import { connectDB } from './utils/features.js';
 import dotenv from 'dotenv'
-const app = express();
 dotenv.config({
     path:"./.env",
 });
 
 const mongoURI = process.env.MONGO_URI;
 const port = process.env.PORT || 3000
- connectDB(mongoURI)
+connectDB(mongoURI)
+
+const app = express();
+app.use(express.json());
+ 
 
 app.get('/', (req, res) => {
     res.send("helo from app.js")
