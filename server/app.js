@@ -2,6 +2,7 @@ import express from 'express';
 import userRoute from './routes/userRoute.js';
 import { connectDB } from './utils/features.js';
 import dotenv from 'dotenv'
+import { errorMiddleware } from './middlewares/error.js';
 dotenv.config({
     path:"./.env",
 });
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 
 app.use('/user',userRoute)
 
+app.use(errorMiddleware)
 
 app.listen(port, () => {
     console.log(`server is running on port ${port}`)

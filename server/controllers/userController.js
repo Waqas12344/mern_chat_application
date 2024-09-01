@@ -1,6 +1,8 @@
 import { compare } from "bcrypt";
 import User from "../models/userModel.js";
 import { sendToken } from "../utils/features.js";
+import { tryCatch } from "../middlewares/error.js";
+import ErrorHandler from "../utils/utility.js";
 
 
 export const newUser = async(req,res)=>{
@@ -22,16 +24,23 @@ export const newUser = async(req,res)=>{
      sendToken(res,user,201,"user created")
 }
 
-export const login =async(req,res)=>{
-    const{ username,password}= req.body;
+export const login = tryCatch( async(req,res,next)=>{
+     
+        const{ username,password}= req.body;
 
     const user = await User.findOne({username}).select("+password");
 
-    if(!user) return res.status(400).json({message:"Invalid credentials"});
+    if(!user) return  next(new ErrorHandler("Invalid Username and password",404))
 
     const isMatch = await compare(password,user.password);
 
-    if(!isMatch) return res.status(400).json({message:"Invalid credentials"});
+    if(!isMatch) return next(new ErrorHandler("Invalid Username and password",404))
     sendToken(res,user,200,"login success")
+   
 }
+)
 
+export const getMyProfile = async(req,res)=>{
+
+
+}
